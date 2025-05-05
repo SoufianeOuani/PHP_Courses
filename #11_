@@ -1,0 +1,110 @@
+
+---
+
+في هذا الدرس، سنتعرف على أساسيات التعامل مع قواعد البيانات باستخدام **MySQL** وربطها بلغة **PHP**. سيتم استخدام واجهتين رئيسيتين:
+
+* `mysqli` (MySQL Improved)
+* `PDO` (PHP Data Objects)
+
+---
+
+## 🔗 ربط PHP بـ MySQL
+
+### 1. باستخدام `mysqli`
+
+```php
+<?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$dbname = "my_database";
+
+$conn = new mysqli($host, $user, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("فشل الاتصال: " . $conn->connect_error);
+}
+echo "تم الاتصال بنجاح!";
+?>
+```
+
+### 2. باستخدام `PDO`
+
+```php
+<?php
+$host = "localhost";
+$dbname = "my_database";
+$user = "root";
+$password = "";
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "تم الاتصال بنجاح!";
+} catch (PDOException $e) {
+    die("فشل الاتصال: " . $e->getMessage());
+}
+?>
+```
+
+---
+
+## 🏗️ إنشاء قاعدة بيانات
+
+```sql
+CREATE DATABASE my_database;
+```
+
+أو باستخدام PHP:
+
+```php
+<?php
+$conn = new mysqli("localhost", "root", "", "");
+
+$sql = "CREATE DATABASE my_database";
+if ($conn->query($sql) === TRUE) {
+    echo "تم إنشاء قاعدة البيانات بنجاح";
+} else {
+    echo "خطأ في إنشاء قاعدة البيانات: " . $conn->error;
+}
+$conn->close();
+?>
+```
+
+---
+
+## 📊 إنشاء جدول داخل قاعدة البيانات
+
+```sql
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    email VARCHAR(100),
+    password VARCHAR(255)
+);
+```
+
+أو باستخدام PHP:
+
+```php
+<?php
+$conn = new mysqli("localhost", "root", "", "my_database");
+
+$sql = "CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    email VARCHAR(100),
+    password VARCHAR(255)
+)";
+
+if ($conn->query($sql) === TRUE) {
+    echo "تم إنشاء الجدول بنجاح";
+} else {
+    echo "خطأ في إنشاء الجدول: " . $conn->error;
+}
+$conn->close();
+?>
+```
+
+---
+

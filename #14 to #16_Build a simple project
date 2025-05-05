@@ -1,0 +1,149 @@
+ممتاز! إليك هيكلة واضحة لبناء 🔐 **نظام تسجيل دخول وتسجيل مستخدمين باستخدام PHP وMySQL** — مشروع مثالي للطلاب في الدروس 14 إلى 16.
+
+---
+
+### ✅ **متطلبات المشروع:**
+
+* واجهة تسجيل مستخدم جديد
+* واجهة تسجيل الدخول
+* صفحة ترحيبية بعد الدخول
+* حماية الجلسات (Sessions)
+* تأمين كلمات المرور (`password_hash`, `password_verify`)
+
+---
+
+## 🧩 **الدرس 14: تصميم قاعدة البيانات**
+
+```sql
+CREATE DATABASE user_system;
+
+USE user_system;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+```
+
+---
+
+## 🟠 **الدرس 15: بناء الصفحات الأساسية**
+
+### 1. `register.html`
+
+```html
+<form action="register.php" method="POST">
+    <input type="text" name="username" placeholder="Username" required><br>
+    <input type="email" name="email" placeholder="Email" required><br>
+    <input type="password" name="password" placeholder="Password" required><br>
+    <button type="submit">Register</button>
+</form>
+```
+
+### 2. `register.php`
+
+```php
+<?php
+$conn = new mysqli("localhost", "root", "", "user_system");
+
+$username = $_POST['username'];
+$email = $_POST['email'];
+$password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+$sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password')";
+if ($conn->query($sql) === TRUE) {
+    echo "Registered successfully!";
+} else {
+    echo "Error: " . $conn->error;
+}
+$conn->close();
+?>
+```
+
+### 3. `login.html`
+
+```html
+<form action="login.php" method="POST">
+    <input type="email" name="email" placeholder="Email" required><br>
+    <input type="password" name="password" placeholder="Password" required><br>
+    <button type="submit">Login</button>
+</form>
+```
+
+---
+
+## 🔐 **الدرس 16: التحقق من البيانات والجلسات**
+
+### 4. `login.php`
+
+```php
+<?php
+session_start();
+$conn = new mysqli("localhost", "root", "", "user_system");
+
+$email = $_POST['email'];
+$password = $_POST['password'];
+
+$sql = "SELECT * FROM users WHERE email='$email'";
+$result = $conn->query($sql);
+
+if ($result->num_rows === 1) {
+    $user = $result->fetch_assoc();
+    if (password_verify($password, $user['password'])) {
+        $_SESSION['username'] = $user['username'];
+        header("Location: welcome.php");
+        exit();
+    } else {
+        echo "Invalid password";
+    }
+} else {
+    echo "User not found";
+}
+$conn->close();
+?>
+```
+
+### 5. `welcome.php`
+
+```php
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: login.html");
+    exit();
+}
+echo "Welcome, " . $_SESSION['username'];
+?>
+<a href="logout.php">Logout</a>
+```
+
+### 6. `logout.php`
+
+```php
+<?php
+session_start();
+session_destroy();
+header("Location: login.html");
+exit();
+?>
+```
+
+---
+
+## 📁 **تنظيم المشروع المقترح:**
+
+```
+/project-root
+├── register.html
+├── login.html
+├── register.php
+├── login.php
+├── welcome.php
+├── logout.php
+└── db.php (اختياري: ملف الاتصال بقاعدة البيانات)
+```
+
+---
+

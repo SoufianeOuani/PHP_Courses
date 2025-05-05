@@ -1,0 +1,93 @@
+
+---
+
+في هذا الدرس سنتعرف على أهم العمليات التي تُستخدم مع قواعد البيانات:
+✅ **إدخال البيانات (Create)**
+✅ **عرض البيانات (Read)**
+✅ **تعديل البيانات (Update)**
+✅ **حذف البيانات (Delete)**
+
+سنستخدم واجهة `mysqli` كمثال.
+
+---
+
+## 🟢 1. إدخال البيانات (INSERT)
+
+```php
+<?php
+$conn = new mysqli("localhost", "root", "", "my_database");
+
+$sql = "INSERT INTO users (username, email, password)
+        VALUES ('soufiane', 'soufiane@example.com', '123456')";
+
+if ($conn->query($sql) === TRUE) {
+    echo "تمت إضافة البيانات بنجاح";
+} else {
+    echo "خطأ: " . $conn->error;
+}
+$conn->close();
+?>
+```
+
+---
+
+## 🔵 2. عرض البيانات (SELECT)
+
+```php
+<?php
+$conn = new mysqli("localhost", "root", "", "my_database");
+
+$sql = "SELECT * FROM users";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        echo "ID: " . $row["id"] . " - الاسم: " . $row["username"] . " - البريد: " . $row["email"] . "<br>";
+    }
+} else {
+    echo "لا توجد بيانات";
+}
+$conn->close();
+?>
+```
+
+---
+
+## 🟠 3. تعديل البيانات (UPDATE)
+
+```php
+<?php
+$conn = new mysqli("localhost", "root", "", "my_database");
+
+$sql = "UPDATE users SET email='newemail@example.com' WHERE id=1";
+
+if ($conn->query($sql) === TRUE) {
+    echo "تم تعديل البيانات بنجاح";
+} else {
+    echo "خطأ في التعديل: " . $conn->error;
+}
+$conn->close();
+?>
+```
+
+---
+
+## 🔴 4. حذف البيانات (DELETE)
+
+```php
+<?php
+$conn = new mysqli("localhost", "root", "", "my_database");
+
+$sql = "DELETE FROM users WHERE id=1";
+
+if ($conn->query($sql) === TRUE) {
+    echo "تم حذف البيانات بنجاح";
+} else {
+    echo "خطأ في الحذف: " . $conn->error;
+}
+$conn->close();
+?>
+```
+
+---
+

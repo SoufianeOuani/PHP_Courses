@@ -1,0 +1,75 @@
+
+---
+
+في هذا الدرس التطبيقي، سنقوم بإنشاء مشروع صغير لتطبيق ما تعلمناه، يتكون من:
+
+✅ **نموذج لتسجيل مستخدم جديد (User Registration Form)**
+✅ **عرض المستخدمين في جدول (Display Users in a Table)**
+
+---
+
+## 📝 1. نموذج تسجيل مستخدم (User Registration Form)
+
+```html
+<form action="register.php" method="POST">
+    <label>Username:</label>
+    <input type="text" name="username" required><br>
+
+    <label>Email:</label>
+    <input type="email" name="email" required><br>
+
+    <label>Password:</label>
+    <input type="password" name="password" required><br>
+
+    <button type="submit">Register</button>
+</form>
+```
+
+---
+
+## 💾 2. ملف `register.php`
+
+```php
+<?php
+$conn = new mysqli("localhost", "root", "", "my_database");
+
+$username = $_POST['username'];
+$email = $_POST['email'];
+$password = $_POST['password']; // في المشاريع الحقيقية يجب تشفير كلمة السر
+
+$sql = "INSERT INTO users (username, email, password)
+        VALUES ('$username', '$email', '$password')";
+
+if ($conn->query($sql) === TRUE) {
+    echo "تم التسجيل بنجاح!";
+} else {
+    echo "خطأ: " . $conn->error;
+}
+$conn->close();
+?>
+```
+
+---
+
+## 📋 3. عرض المستخدمين في جدول
+
+```php
+<?php
+$conn = new mysqli("localhost", "root", "", "my_database");
+
+$sql = "SELECT * FROM users";
+$result = $conn->query($sql);
+
+echo "<table border='1'>
+<tr><th>ID</th><th>Username</th><th>Email</th></tr>";
+
+while($row = $result->fetch_assoc()) {
+    echo "<tr><td>".$row['id']."</td><td>".$row['username']."</td><td>".$row['email']."</td></tr>";
+}
+
+echo "</table>";
+$conn->close();
+?>
+```
+
+---
